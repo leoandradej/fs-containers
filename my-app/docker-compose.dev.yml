@@ -1,0 +1,36 @@
+services:
+  frontend:
+    image: bloglist-front-dev
+    build:
+      context: ../../bloglist/frontend
+      dockerfile: ../../fs-containers/my-app/frontend/dev.Dockerfile
+    volumes:
+      - ../../bloglist/frontend/:/usr/src/app
+    environment:
+      - VITE_BACKEND_URL=http://localhost:8080/api
+
+  backend:
+    image: bloglist-back-dev
+    build:
+      context: ../../bloglist
+      dockerfile: ../../fs-containers/my-app/backend/dev.Dockerfile
+    volumes:
+      - ../../bloglist/:/usr/src/app
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/bloglist
+      - SECRET=devsecret
+      - PORT=3003
+      - NODE_ENV=development
+
+  mongo:
+    image: mongo
+
+  nginx:
+    image: nginx:1.29-alpine
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    depends_on:
+      - frontend
+      - backend
