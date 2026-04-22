@@ -22,11 +22,6 @@ router.post("/", async (req, res) => {
   res.send(todo);
 });
 
-router.get("/statistics", async (req, res) => {
-  const added_todos = await get("added_todos");
-  res.json({ added_todos: Number(added_todos) || 0 });
-});
-
 const singleRouter = express.Router();
 
 const findByIdMiddleware = async (req, res, next) => {
@@ -39,7 +34,7 @@ const findByIdMiddleware = async (req, res, next) => {
 
 /* DELETE todo. */
 singleRouter.delete("/", async (req, res) => {
-  await req.todo.delete();
+  await req.todo.deleteOne();
   res.sendStatus(200);
 });
 
